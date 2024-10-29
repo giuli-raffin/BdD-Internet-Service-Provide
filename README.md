@@ -1,5 +1,6 @@
 # Base de Datos: Wireless Internet Service Provider
-### El trabajo  consiste en la resolución de un conjunto de controles y servicios sobre una base de datos que mantiene un sistema para un Wireless Internet Service Provider.
+## El trabajo consiste en la resolución de un conjunto de controles y servicios sobre una base de datos que mantiene un sistema para un Wireless Internet Service Provider.
+### Se utilizaron los lenguajes PostgreSQL y SQL Estandar
 - La empresa posee clientes dispersos en diferentes localidades de la provincia; adicionalmente cada cliente puede poseer varios puntos de conexión (equipos).
 - De cada punto de conexión a la red, es necesario registrar las características del equipo: nombre (marca, modelo, etc.), tipo de conexión (PPTP, PPPoE) y tipo de asignación IP (DHCP, IP FIJA).
 - Es necesario mantener todos los datos de los clientes, a fin de poder registrar los servicios que deberán ser abonados cada mes. En cualquier momento el cliente puede solicitar la baja, quedando inactivo, siempre y cuando no adeude ningún servicio.
