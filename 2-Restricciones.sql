@@ -1,11 +1,15 @@
---a
+-- 1. Escribir la restricción de la manera que considere más apropiada en SQL estándar declarativo, indicando su tipo y justificación correspondiente. 
+-- 2. Para los 3 últimos controles (c, d, e), implementar la restricción en PostgreSQL de la forma más adecuada, según las posibilidades que ofrece el DBMS.
+
+
+--a. Si una persona está inactiva debe tener establecida una fecha de baja, la cual se debe controlar que sea al menos 18 años posterior a la de nacimiento.
 alter table PERSONA
 	add constraint ck_a CHECK ( (activo is false 
 and fecha_baja is not null 
 and current_date - (cast (fecha_nacimiento as date)) >= 18*365)
 or activo is true );
 
---b
+--b. El importe de un comprobante debe coincidir con la suma de los importes de sus líneas (si las tuviera).
 create assertion ck_b CHECK ( NOT EXISTS (	
 select 1
 from COMPROBANTE c
@@ -16,10 +20,11 @@ group by c.id_comp, c.importe
 having (sum(l.importe)) <> c.importe
 ) );
 
---c
+--c. Un equipo puede tener asignada un IP y, en este caso, la MAC resulta requerida.
 alter table EQUIPO
 add constraint ck_c CHECK ( (ip is not null and mac is null) or ip is null );
 
+--2
 create or replace function FN_inciso_c() returns trigger as $$
 begin
  if ( exists ( select 1 from EQUIPO
@@ -37,13 +42,14 @@ before insert or update of ip, mac
 on EQUIPO
 for each row execute procedure FN_inciso_c();
 
---d
+--d. Las IPs asignadas a los equipos no pueden ser compartidas entre clientes.
 create assertion ck_d CHECK ( not exists (
 						select 1 
 from equipo e
 						join equipo e2 on e.ip = e2.ip
 						where e.id_cliente <> e2.id_cliente ) );
 
+--2
 create or replace function FN_inciso_d() returns trigger as $$
 begin
  if ( exists ( select 1
@@ -65,14 +71,15 @@ before insert or update of ip, id_cliente
 on EQUIPO
 for each row execute procedure FN_inciso_d();
 
---e
-					select 1
+--e. No se pueden instalar más de 25 equipos por Barrio.
+select 1
 from equipo e
 join direccion d on d.id_persona = e.id_cliente
 group by (d.id_barrio)
 having count(*) > 25
 ) );
 
+--2
 create or replace function or procedure FN_inciso_e_equipo() returns trigger as $$
 begin
 	if ( exists ( select 1
